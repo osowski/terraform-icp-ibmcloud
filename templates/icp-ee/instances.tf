@@ -141,7 +141,8 @@ resource "ibm_compute_vm_instance" "icp-master" {
   local_disk = "${var.master["local_disk"]}"
   disks = [
     "${var.master["disk_size"]}",
-    "${var.master["docker_vol_size"]}"
+    "${var.master["docker_vol_size"]}",
+    "${var.master["var_disk_size"]}"
   ]
 
   # Virtual IP uses a secondary IP on public interface
@@ -198,13 +199,17 @@ ${var.master["nodes"] > 1 ? "
 :
 "" }
 runcmd:
-  - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc
+  - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - mkdir -p /var/lib/registry
   - mkdir -p /var/lib/icp/audit
   - echo '${ibm_storage_file.fs_registry.mountpoint} /var/lib/registry nfs defaults 0 0' | tee -a /etc/fstab
   - echo '${ibm_storage_file.fs_audit.mountpoint} /var/lib/icp/audit nfs defaults 0 0' | tee -a /etc/fstab
   - sudo mount -a
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
+power_state:
+  timeout: 60
+  message: Rebooting to complete 'var' mount
+  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.
@@ -262,7 +267,8 @@ resource "ibm_compute_vm_instance" "icp-mgmt" {
   local_disk = "${var.mgmt["local_disk"]}"
   disks = [
     "${var.mgmt["disk_size"]}",
-    "${var.mgmt["docker_vol_size"]}"
+    "${var.mgmt["docker_vol_size"]}",
+    "${var.mgmt["var_disk_size"]}"
   ]
 
   network_speed = "${var.mgmt["network_speed"]}"
@@ -311,8 +317,12 @@ write_files:
     encoding: b64
     content: ${base64encode("${tls_self_signed_cert.registry_cert.cert_pem}")}
 runcmd:
-  - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc
+  - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
+power_state:
+  timeout: 60
+  message: Rebooting to complete 'var' mount
+  mode: reboot
 EOF
 
   hourly_billing = "${var.mgmt["hourly_billing"]}"
@@ -381,7 +391,8 @@ resource "ibm_compute_vm_instance" "icp-va" {
   local_disk = "${var.va["local_disk"]}"
   disks = [
     "${var.va["disk_size"]}",
-    "${var.va["docker_vol_size"]}"
+    "${var.va["docker_vol_size"]}",
+    "${var.va["var_disk_size"]}"
   ]
 
   tags = [
@@ -414,8 +425,12 @@ write_files:
     encoding: b64
     content: ${base64encode("${tls_self_signed_cert.registry_cert.cert_pem}")}
 runcmd:
-  - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc
+  - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
+power_state:
+  timeout: 60
+  message: Rebooting to complete 'var' mount
+  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.
@@ -492,7 +507,8 @@ resource "ibm_compute_vm_instance" "icp-proxy" {
   local_disk = "${var.proxy["local_disk"]}"
   disks = [
     "${var.proxy["disk_size"]}",
-    "${var.proxy["docker_vol_size"]}"
+    "${var.proxy["docker_vol_size"]}",
+    "${var.proxy["var_disk_size"]}"
   ]
 
   user_metadata = <<EOF
@@ -518,8 +534,12 @@ write_files:
     encoding: b64
     content: ${base64encode("${tls_self_signed_cert.registry_cert.cert_pem}")}
 runcmd:
-  - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc
+  - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
+power_state:
+  timeout: 60
+  message: Rebooting to complete 'var' mount
+  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.
@@ -592,7 +612,8 @@ resource "ibm_compute_vm_instance" "icp-worker" {
   local_disk = "${var.worker["local_disk"]}"
   disks = [
     "${var.worker["disk_size"]}",
-    "${var.worker["docker_vol_size"]}"
+    "${var.worker["docker_vol_size"]}",
+    "${var.worker["var_disk_size"]}"
   ]
 
   hourly_billing = "${var.worker["hourly_billing"]}"
@@ -625,8 +646,12 @@ write_files:
     encoding: b64
     content: ${base64encode("${tls_self_signed_cert.registry_cert.cert_pem}")}
 runcmd:
-  - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc
+  - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
+power_state:
+  timeout: 60
+  message: Rebooting to complete 'var' mount
+  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.

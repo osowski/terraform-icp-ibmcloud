@@ -84,6 +84,7 @@ variable "master" {
 
     disk_size         = "100" // GB
     docker_vol_size   = "100" // GB
+    var_disk_size     = "300" // GB
     local_disk        = false
 
     network_speed     = "1000"
@@ -103,6 +104,7 @@ variable "mgmt" {
 
     disk_size         = "100" // GB
     docker_vol_size   = "100" // GB
+    var_disk_size     = "250" // GB
     local_disk  = false
 
     network_speed = "1000"
@@ -122,6 +124,7 @@ variable "proxy" {
 
     disk_size         = "100" // GB
     docker_vol_size   = "100" // GB
+    var_disk_size     = "150" // GB
     local_disk  = false
 
     network_speed= "1000"
@@ -141,6 +144,7 @@ variable "va" {
 
     disk_size         = "100" // GB
     docker_vol_size   = "100" // GB
+    var_disk_size     = "250" // GB
     local_disk  = false
 
     network_speed = "1000"
@@ -161,6 +165,7 @@ variable "worker" {
 
     disk_size         = "100" // GB
     docker_vol_size   = "100" // GB
+    var_disk_size      = "150" // GB
     local_disk  = false
 
     network_speed= "1000"

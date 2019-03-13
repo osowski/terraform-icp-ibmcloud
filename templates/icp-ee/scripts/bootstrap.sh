@@ -150,6 +150,9 @@ while getopts ":p:d:i:s:u:" arg; do
       u)
         docker_user=${OPTARG}
         ;;
+      v)
+        var_disk_size=${OPTARG}
+        ;;
     esac
 done
 
@@ -168,5 +171,25 @@ else
 fi
 
 docker_install
+
+if [ -z "${var_disk_size}" ]; then
+  #############
+  echo "Moving /var to new expanded filesystem"
+
+  sudo parted -s -a optimal /dev/xvde mklabel gpt -- mkpart primary ext4 1 -1
+  sudo partprobe
+  sudo mkfs.ext4 /dev/xvde1 
+  echo "/dev/xvde1 /var ext4 defaults 1 -1" | sudo tee -a /etc/fstab
+
+  sudo mkdir /var.tmp
+  sudo mount /dev/xvde1 /var.tmp
+  sudo rsync -aAX --exclude 'lib/lxcfs' /var/ /var.tmp
+
+  #mount -a (taken care of on reboot)
+
+  #And update cloud-init to reboot after completion
+  #Would this require a .second_boot flag?
+  #############
+fi
 
 echo "Complete.."
