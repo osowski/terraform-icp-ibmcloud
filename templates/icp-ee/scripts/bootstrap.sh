@@ -192,6 +192,7 @@ if [ -z "${var_disk_size}" ]; then
   #############
   
   echo "sudo touch /opt/ibm/.second_boot" | sudo tee /etc/init.d/second-boot
+  sudo chmod +x /etc/init.d/second-boot
 fi
 
 echo "Complete.."

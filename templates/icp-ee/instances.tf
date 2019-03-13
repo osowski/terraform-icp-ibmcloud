@@ -206,10 +206,6 @@ runcmd:
   - echo '${ibm_storage_file.fs_audit.mountpoint} /var/lib/icp/audit nfs defaults 0 0' | tee -a /etc/fstab
   - sudo mount -a
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
-power_state:
-  timeout: 60
-  message: Rebooting to complete 'var' mount
-  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.
@@ -246,14 +242,26 @@ EOF
       bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
     }
 
-    /*inline = [
+    inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
-      ???"while [ ! -f /var/lib/cloud/instance/boot-finished ] && [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
+    ]
+    
+    /*inline = [
+      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
     ]*/
+  }
+  
+  provisioner "remote-exec" {
+    connection {
+      user          = "icpdeploy"
+      private_key   = "${tls_private_key.installkey.private_key_pem}"
+      bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
+    }
     
     inline = [
-      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
+      "(sleep 2 && sudo reboot)&"
     ]
+    
   }
 }
 
@@ -324,10 +332,6 @@ write_files:
 runcmd:
   - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
-power_state:
-  timeout: 60
-  message: Rebooting to complete 'var' mount
-  mode: reboot
 EOF
 
   hourly_billing = "${var.mgmt["hourly_billing"]}"
@@ -362,14 +366,28 @@ EOF
       bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
     }
 
-    /*inline = [
+    inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
+    ]
+    
+    /*inline = [
+      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
     ]*/
+  }
+  
+  provisioner "remote-exec" {
+    connection {
+      user          = "icpdeploy"
+      private_key   = "${tls_private_key.installkey.private_key_pem}"
+      bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
+    }
     
     inline = [
-      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
+      "(sleep 2 && sudo reboot)&"
     ]
+    
   }
+  
 }
 
 resource "ibm_compute_vm_instance" "icp-va" {
@@ -436,10 +454,6 @@ write_files:
 runcmd:
   - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
-power_state:
-  timeout: 60
-  message: Rebooting to complete 'var' mount
-  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.
@@ -475,14 +489,28 @@ EOF
       bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
     }
 
-    /*inline = [
+    inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
+    ]
+    
+    /*inline = [
+      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
     ]*/
+  }
+  
+  provisioner "remote-exec" {
+    connection {
+      user          = "icpdeploy"
+      private_key   = "${tls_private_key.installkey.private_key_pem}"
+      bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
+    }
     
     inline = [
-      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
+      "(sleep 2 && sudo reboot)&"
     ]
+    
   }
+  
 }
 
 resource "ibm_compute_vm_instance" "icp-proxy" {
@@ -549,10 +577,6 @@ write_files:
 runcmd:
   - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
-power_state:
-  timeout: 60
-  message: Rebooting to complete 'var' mount
-  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.
@@ -589,13 +613,26 @@ EOF
       bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
     }
 
-    /*inline = [
+    inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
+    ]
+    
+    /*inline = [
+      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
     ]*/
+  }
+  
+  provisioner "remote-exec" {
+    connection {
+      user          = "icpdeploy"
+      private_key   = "${tls_private_key.installkey.private_key_pem}"
+      bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
+    }
     
     inline = [
-      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
+      "(sleep 2 && sudo reboot)&"
     ]
+    
   }
 }
 
@@ -665,10 +702,6 @@ write_files:
 runcmd:
   - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
-power_state:
-  timeout: 60
-  message: Rebooting to complete 'var' mount
-  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.
@@ -705,12 +738,26 @@ EOF
       bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
     }
 
-    /*inline = [
+    inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
+    ]
+    
+    /*inline = [
+      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
     ]*/
+  }
+  
+  provisioner "remote-exec" {
+    connection {
+      user          = "icpdeploy"
+      private_key   = "${tls_private_key.installkey.private_key_pem}"
+      bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
+    }
     
     inline = [
-      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
+      "(sleep 2 && sudo reboot)&"
     ]
+    
   }
+  
 }
