@@ -246,8 +246,13 @@ EOF
       bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
     }
 
-    inline = [
+    /*inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
+      ???"while [ ! -f /var/lib/cloud/instance/boot-finished ] && [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
+    ]*/
+    
+    inline = [
+      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
     ]
   }
 }
@@ -357,8 +362,12 @@ EOF
       bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
     }
 
-    inline = [
+    /*inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
+    ]*/
+    
+    inline = [
+      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
     ]
   }
 }
@@ -466,8 +475,12 @@ EOF
       bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
     }
 
-    inline = [
+    /*inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
+    ]*/
+    
+    inline = [
+      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
     ]
   }
 }
@@ -576,8 +589,12 @@ EOF
       bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
     }
 
-    inline = [
+    /*inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
+    ]*/
+    
+    inline = [
+      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
     ]
   }
 }
@@ -688,8 +705,12 @@ EOF
       bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
     }
 
-    inline = [
+    /*inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
+    ]*/
+    
+    inline = [
+      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
     ]
   }
 }

@@ -190,6 +190,8 @@ if [ -z "${var_disk_size}" ]; then
   #And update cloud-init to reboot after completion
   #Would this require a .second_boot flag?
   #############
+  
+  echo "sudo touch /opt/ibm/.second_boot" | sudo tee /etc/init.d/second-boot
 fi
 
 echo "Complete.."
