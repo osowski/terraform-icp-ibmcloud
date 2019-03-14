@@ -139,7 +139,7 @@ EOF
 }
 
 ##### MAIN #####
-while getopts ":p:d:i:s:u:" arg; do
+while getopts ":p:d:i:s:u:v:" arg; do
     case "${arg}" in
       p)
         package_location=${OPTARG}
@@ -174,6 +174,7 @@ docker_install
 
 # var_disk is set to mount to third disk
 # disk_size is provided as part of the instances.tf template
+echo "Checking for /var disk editing: ${var_disk}"
 if [ ! -z "${var_disk}" ]; then
   echo "Moving /var to new expanded filesystem"
 
