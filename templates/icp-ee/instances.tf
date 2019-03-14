@@ -245,23 +245,17 @@ EOF
     inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
     ]
-    
-    /*inline = [
-      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
-    ]*/
   }
   
+  provisioner "file" {
+    source = "scripts/reboot_host.sh"
+    destination = "/tmp/reboot_host.sh"
+  }
+
   provisioner "remote-exec" {
-    connection {
-      user          = "icpdeploy"
-      private_key   = "${tls_private_key.installkey.private_key_pem}"
-      bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
-    }
-    
     inline = [
-      "(sleep 2 && sudo reboot)&"
+      "bash /tmp/load_image.sh"
     ]
-    
   }
 }
 
@@ -369,23 +363,17 @@ EOF
     inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
     ]
-    
-    /*inline = [
-      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
-    ]*/
   }
   
+  provisioner "file" {
+    source = "scripts/reboot_host.sh"
+    destination = "/tmp/reboot_host.sh"
+  }
+
   provisioner "remote-exec" {
-    connection {
-      user          = "icpdeploy"
-      private_key   = "${tls_private_key.installkey.private_key_pem}"
-      bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
-    }
-    
     inline = [
-      "(sleep 2 && sudo reboot)&"
+      "bash /tmp/load_image.sh"
     ]
-    
   }
   
 }
@@ -492,23 +480,17 @@ EOF
     inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
     ]
-    
-    /*inline = [
-      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
-    ]*/
   }
   
+  provisioner "file" {
+    source = "scripts/reboot_host.sh"
+    destination = "/tmp/reboot_host.sh"
+  }
+
   provisioner "remote-exec" {
-    connection {
-      user          = "icpdeploy"
-      private_key   = "${tls_private_key.installkey.private_key_pem}"
-      bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
-    }
-    
     inline = [
-      "(sleep 2 && sudo reboot)&"
+      "bash /tmp/load_image.sh"
     ]
-    
   }
   
 }
@@ -616,23 +598,17 @@ EOF
     inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
     ]
-    
-    /*inline = [
-      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
-    ]*/
   }
   
+  provisioner "file" {
+    source = "scripts/reboot_host.sh"
+    destination = "/tmp/reboot_host.sh"
+  }
+
   provisioner "remote-exec" {
-    connection {
-      user          = "icpdeploy"
-      private_key   = "${tls_private_key.installkey.private_key_pem}"
-      bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
-    }
-    
     inline = [
-      "(sleep 2 && sudo reboot)&"
+      "bash /tmp/load_image.sh"
     ]
-    
   }
 }
 
@@ -741,23 +717,17 @@ EOF
     inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
     ]
-    
-    /*inline = [
-      "while [ ! -f /opt/ibm/.second-boot ]; do sleep 1; done"
-    ]*/
   }
   
+  provisioner "file" {
+    source = "scripts/reboot_host.sh"
+    destination = "/tmp/reboot_host.sh"
+  }
+
   provisioner "remote-exec" {
-    connection {
-      user          = "icpdeploy"
-      private_key   = "${tls_private_key.installkey.private_key_pem}"
-      bastion_host  = "${var.private_network_only ? ibm_compute_vm_instance.icp-boot.ipv4_address_private : ibm_compute_vm_instance.icp-boot.ipv4_address}"
-    }
-    
     inline = [
-      "(sleep 2 && sudo reboot)&"
+      "bash /tmp/load_image.sh"
     ]
-    
   }
   
 }
