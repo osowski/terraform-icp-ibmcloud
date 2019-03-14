@@ -151,7 +151,7 @@ while getopts ":p:d:i:s:u:" arg; do
         docker_user=${OPTARG}
         ;;
       v)
-        var_disk_size=${OPTARG}
+        var_disk=${OPTARG}
         ;;
     esac
 done
@@ -172,25 +172,20 @@ fi
 
 docker_install
 
-if [ -z "${var_disk_size}" ]; then
-  #############
+# var_disk is set to mount to third disk
+# disk_size is provided as part of the instances.tf template
+if [ ! -z "${var_disk}" ]; then
   echo "Moving /var to new expanded filesystem"
 
-  sudo parted -s -a optimal /dev/xvde mklabel gpt -- mkpart primary ext4 1 -1
+  sudo parted -s -a optimal ${var_disk} mklabel gpt -- mkpart primary ext4 1 -1
   sudo partprobe
-  sudo mkfs.ext4 /dev/xvde1 
-  echo "/dev/xvde1 /var ext4 defaults 1 -1" | sudo tee -a /etc/fstab
+  sudo mkfs.ext4 ${var_disk}1
+  echo "${var_disk}1 /var ext4 defaults 0 0" | sudo tee -a /etc/fstab
 
   sudo mkdir /var.tmp
-  sudo mount /dev/xvde1 /var.tmp
+  sudo mount ${var_disk} /var.tmp
   sudo rsync -aAX --exclude 'lib/lxcfs' /var/ /var.tmp
 
-  #mount -a (taken care of on reboot)
-
-  #And update cloud-init to reboot after completion
-  #Would this require a .second_boot flag?
-  #############
-  
   echo "sudo touch /opt/ibm/.second_boot" | sudo tee /etc/init.d/second-boot
   sudo chmod +x /etc/init.d/second-boot
 fi

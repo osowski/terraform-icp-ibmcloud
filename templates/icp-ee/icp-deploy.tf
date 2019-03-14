@@ -46,7 +46,8 @@ resource "null_resource" "image_load" {
       "sudo mv /tmp/load_image.sh /opt/ibm/scripts/",
       "sudo chmod a+x /opt/ibm/scripts/load_image.sh",
       "/opt/ibm/scripts/load_image.sh -p ${var.image_location} -r ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain} -c ${local.docker_password}",
-      "sudo touch /opt/ibm/.imageload_complete"
+      "sudo touch /opt/ibm/.imageload_complete",
+      "sudo touch /opt/ibm/.second_boot"
     ]
   }
 }
@@ -113,7 +114,10 @@ module "icpprovision" {
     # Make sure to wait for image load to complete
     hooks = {
       "boot-preconfig" = [
-        "while [ ! -f /opt/ibm/.imageload_complete ]; do sleep 5; done"
+        "while [ ! -f /opt/ibm/.imageload_complete ]; do echo 'Waiting for /opt/ibm/.imageload_complete'; sleep 5; done"
+      ]
+      "cluster-preconfig" = [
+        "while [ ! -f /opt/ibm/.second_boot ]; do echo 'Waiting for /opt/ibm/.second_boot'; sleep 5; done"
       ]
     }
 

@@ -206,6 +206,10 @@ runcmd:
   - echo '${ibm_storage_file.fs_audit.mountpoint} /var/lib/icp/audit nfs defaults 0 0' | tee -a /etc/fstab
   - sudo mount -a
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
+power_state:
+  timeout: 60
+  message: Rebooting to complete 'var' mount
+  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.
@@ -244,17 +248,6 @@ EOF
 
     inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
-    ]
-  }
-  
-  provisioner "file" {
-    source = "scripts/reboot_host.sh"
-    destination = "/tmp/reboot_host.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "bash /tmp/load_image.sh"
     ]
   }
 }
@@ -326,6 +319,10 @@ write_files:
 runcmd:
   - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
+power_state:
+  timeout: 60
+  message: Rebooting to complete 'var' mount
+  mode: reboot
 EOF
 
   hourly_billing = "${var.mgmt["hourly_billing"]}"
@@ -364,18 +361,6 @@ EOF
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
     ]
   }
-  
-  provisioner "file" {
-    source = "scripts/reboot_host.sh"
-    destination = "/tmp/reboot_host.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "bash /tmp/load_image.sh"
-    ]
-  }
-  
 }
 
 resource "ibm_compute_vm_instance" "icp-va" {
@@ -442,6 +427,10 @@ write_files:
 runcmd:
   - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
+power_state:
+  timeout: 60
+  message: Rebooting to complete 'var' mount
+  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.
@@ -481,18 +470,6 @@ EOF
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
     ]
   }
-  
-  provisioner "file" {
-    source = "scripts/reboot_host.sh"
-    destination = "/tmp/reboot_host.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "bash /tmp/load_image.sh"
-    ]
-  }
-  
 }
 
 resource "ibm_compute_vm_instance" "icp-proxy" {
@@ -559,6 +536,10 @@ write_files:
 runcmd:
   - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
+power_state:
+  timeout: 60
+  message: Rebooting to complete 'var' mount
+  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.
@@ -597,17 +578,6 @@ EOF
 
     inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
-    ]
-  }
-  
-  provisioner "file" {
-    source = "scripts/reboot_host.sh"
-    destination = "/tmp/reboot_host.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "bash /tmp/load_image.sh"
     ]
   }
 }
@@ -678,6 +648,10 @@ write_files:
 runcmd:
   - /opt/ibm/scripts/bootstrap.sh -u icpdeploy ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdc -v /dev/xvde
   - echo '${ibm_compute_vm_instance.icp-boot.ipv4_address_private} ${var.deployment}-boot-${random_id.clusterid.hex}.${var.domain}' >> /etc/hosts
+power_state:
+  timeout: 60
+  message: Rebooting to complete 'var' mount
+  mode: reboot
 EOF
 
   # Permit an ssh loging for the key owner.
@@ -718,16 +692,4 @@ EOF
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done"
     ]
   }
-  
-  provisioner "file" {
-    source = "scripts/reboot_host.sh"
-    destination = "/tmp/reboot_host.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "bash /tmp/load_image.sh"
-    ]
-  }
-  
 }
